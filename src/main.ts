@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { createServer, proxy } from 'aws-serverless-express';
-import { eventContext } from 'aws-serverless-express/middleware';
 import { Context, Handler } from 'aws-lambda';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
@@ -21,7 +20,6 @@ async function bootstrap(): Promise<Handler> {
   const app = await NestFactory.create(AppModule);
   const expressApp = app.getHttpAdapter().getInstance();
   setupSwagger(app);
-  app.use(eventContext());
   await app.init();
   return createServer(expressApp, undefined, []);
 }
