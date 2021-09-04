@@ -8,10 +8,16 @@ provider:
   runtime: nodejs14.x
   region: eu-west-1
   lambdaHashingVersion: "20201221"
+  environment:
+    POSTGRES_HOST=
+    POSTGRES_USER=
+    POSTGRES_PASSWORD=
+    POSTGRES_PORT=
+    POSTGRES_DB=
 
 functions:
   main:
-    handler: dist/main.handler
+    handler: dist/src/main.handler
     events:
       - http:
           method: ANY

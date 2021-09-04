@@ -21,6 +21,7 @@ async function bootstrap(): Promise<Handler> {
   const expressApp = app.getHttpAdapter().getInstance();
   setupSwagger(app);
   await app.init();
+  await app.listen(3000);
   return createServer(expressApp, undefined, []);
 }
 
@@ -34,3 +35,5 @@ export const handler: Handler = async (event: any, context: Context) => {
   server = server ?? (await bootstrap());
   return proxy(server, event, context, 'PROMISE').promise;
 };
+
+bootstrap();
