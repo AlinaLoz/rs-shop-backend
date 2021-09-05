@@ -8,6 +8,8 @@ import { AppModule } from './app.module';
 
 let server: Handler = null;
 
+import cors from 'cors';
+
 function setupSwagger(app: INestApplication): void {
   const options = new DocumentBuilder()
     .setTitle('Lozita shop Documentation')
@@ -20,6 +22,7 @@ async function bootstrap(): Promise<Handler> {
   const app = await NestFactory.create(AppModule);
   const expressApp = app.getHttpAdapter().getInstance();
   setupSwagger(app);
+  app.use(cors());
   await app.init();
   await app.listen(3000);
   return createServer(expressApp, undefined, []);

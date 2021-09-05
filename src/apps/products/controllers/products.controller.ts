@@ -1,8 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body } from '@nestjs/common';
 import { Query } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-
-import { PaginationResponseDTO } from '@libs/dtos';
 
 import { ProductsService } from '../services/products.service';
 import {
@@ -10,6 +8,7 @@ import {
   GetProductByIdResponseDTO,
   GetProductsQueryDTO,
   GetProductsResponseDTO,
+  CreateProductBodyDTO, CreateProductResponseDTO,
 } from '../dtos/products.dtos';
 
 @Controller('products')
@@ -27,7 +26,7 @@ export class ProductsController {
       skip: query.skip,
       limit: query.limit,
       count,
-      items: items.map((item) => new GetProductByIdResponseDTO(item)),
+      items: items.map((item) => new GetProductByIdResponseDTO({ ...item, ...item.stock })),
     };
   }
 
@@ -37,6 +36,15 @@ export class ProductsController {
     @Param() { id }: GetProductByIdParamsDTO,
   ): Promise<GetProductByIdResponseDTO> {
     const product = await this.productsService.getProductsById(id);
-    return new GetProductByIdResponseDTO(product);
+    return new GetProductByIdResponseDTO({ ...product, ...product.stock });
+  }
+  
+  @Post('/')
+  @ApiOkResponse({ type: CreateProductResponseDTO })
+  async createProduct(
+    @Body() body: CreateProductBodyDTO,
+  ): Promise<CreateProductResponseDTO> {
+    const product = await this.productsService.createProduct(body);
+    return new GetProductByIdResponseDTO({ ...product, ...product.stock });
   }
 }
