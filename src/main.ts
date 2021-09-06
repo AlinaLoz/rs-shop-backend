@@ -3,6 +3,7 @@ import { createServer, proxy } from 'aws-serverless-express';
 import { Context, Handler } from 'aws-lambda';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
+import cors from 'cors';
 
 import { AppModule } from './app.module';
 
@@ -20,6 +21,7 @@ async function bootstrap(): Promise<Handler> {
   const app = await NestFactory.create(AppModule);
   const expressApp = app.getHttpAdapter().getInstance();
   setupSwagger(app);
+  app.use(cors());
   await app.init();
   return createServer(expressApp, undefined, []);
 }
