@@ -2,12 +2,11 @@ import { Connection, Repository } from 'typeorm';
 import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Product } from '@libs/entities/product.entity';
+import { Product, Stock } from '@libs/entities'
 import { ERRORS } from '@libs/constants';
 import { NotFoundError } from '@libs/exceptions/errors';
 import { PaginationDTO } from "@libs/dtos";
-import { CreateProductBodyDTO } from "@apps/products/dtos/products.dtos";
-import { Stock } from '@libs/entities';
+import { CreateProductBodyDTO } from "../dtos/products.dtos";
 
 @Injectable()
 export class ProductsService {

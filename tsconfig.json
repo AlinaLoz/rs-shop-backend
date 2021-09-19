@@ -14,9 +14,9 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "paths": {
-      "@libs": ["src/libs"],
-      "@libs/*": ["src/libs/*"],
-      "@apps/*": ["src/apps/*"],
+      "@libs": ["libs"],
+      "@libs/*": ["libs/*"],
+      "@apps/*": ["apps/*"],
     }
   }
 }

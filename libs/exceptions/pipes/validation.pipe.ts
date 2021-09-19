@@ -2,7 +2,7 @@ import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { PipeTransform } from '@nestjs/common';
 
-import { BadRequestError } from '@libs/exceptions/errors';
+import { BadRequestError } from '../errors';
 
 export class ClassValidationPipe implements PipeTransform {
   async transform(value, metadata) {

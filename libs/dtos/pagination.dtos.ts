@@ -2,7 +2,7 @@ import { IsOptional, Max, Min, IsInt } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
-import { ERRORS, MAX_INTEGER, PAGINATION_LIMIT_DEFAULT } from '@libs/constants';
+import { ERRORS, MAX_INTEGER, PAGINATION_LIMIT_DEFAULT } from '../constants';
 
 export class PaginationDTO {
   @ApiPropertyOptional()

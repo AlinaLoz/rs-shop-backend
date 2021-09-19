@@ -1,0 +1,55 @@
+service: ${env:SERVICE_NAME}-imports
+
+useDotenv: true
+plugins:
+  - serverless-offline
+  - serverless-plugin-optimize
+  - serverless-s3-local
+
+# не создавать руками бакет, а создавать программно,если не существует
+custom:
+  s3BucketName: ${env:S3_BUCKET_PRODUCTS}
+  s3:
+    host: localhost
+    directory: ${env:AWS_S3_LOCALLY_DIR}
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: ${env:AWS_REGION}
+  lambdaHashingVersion: "20201221"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "s3:ListBucket"
+          Resource:
+            - "arn:aws:s3:::${env:S3_BUCKET_PRODUCTS}"
+        - Effect: Allow
+          Action:
+            - "*"
+          Resource:
+            - "arn:aws:s3:::${env:S3_BUCKET_PRODUCTS}/*"
+
+functions:
+  importProductsFile:
+    handler: dist/apps/imports/main.importProductsFile
+    events:
+      - http:
+          method: get
+          path: import
+          request:
+            parameters:
+              querystrings:
+                name: true
+          cors: true
+  uploadProductsFile:
+    handler: dist/apps/imports/main.uploadProductsFile
+    events:
+      - s3:
+          bucket: ${env:S3_BUCKET_PRODUCTS}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: ${env:S3_UPLOAD_DIR}
+          existing: true

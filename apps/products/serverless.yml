@@ -1,8 +1,10 @@
-service: rs-shop-back-lozita
+service: rs-shop-back-lozita-products
 
 plugins:
   - serverless-offline
+  - serverless-plugin-optimize
 
+# todo pass env
 provider:
   name: aws
   runtime: nodejs14.x
@@ -16,10 +18,11 @@ provider:
     POSTGRES_DB: shop
 
 functions:
-  main:
-    handler: dist/src/main.handler
+  products:
+    handler: dist/apps/products/src/main.handler
     events:
       - http:
           method: ANY
           path: '{proxy+}'
           cors: true
+

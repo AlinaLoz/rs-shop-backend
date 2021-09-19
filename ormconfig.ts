@@ -1,15 +1,15 @@
-import * as config from 'config';
+require('dotenv').config();
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import * as Migrations from './migrations';
 
 export const DB_CONFIG = {
 	type: 'postgres',
-	host: config.POSTGRES.HOST,
-	port: config.POSTGRES.PORT,
-	username: config.POSTGRES.USERNAME,
-	password: config.POSTGRES.PASSWORD,
-	database: config.POSTGRES.DB,
+	host: process.env.PG_HOST,
+	port: +process.env.PG_PORT,
+	username: process.env.PG_USERNAME,
+	password: process.env.PG_PASSWORD,
+	database: process.env.PG_DB,
 	migrationsRun: false,
 	migrations: Object.values(Migrations),
 	synchronize: false,
