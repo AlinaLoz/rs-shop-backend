@@ -1,21 +1,21 @@
-service: rs-shop-back-lozita-products
+service: ${env:SERVICE_NAME}-products
 
+useDotenv: true
 plugins:
   - serverless-offline
   - serverless-plugin-optimize
 
-# todo pass env
 provider:
   name: aws
   runtime: nodejs14.x
-  region: eu-west-1
+  region: ${env:AWS_REGION}
   lambdaHashingVersion: "20201221"
   environment:
-    POSTGRES_HOST: POSTGRES_HOST
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: POSTGRES_HOST
-    POSTGRES_PORT: 5632
-    POSTGRES_DB: shop
+    PG_HOST: ${env:PG_HOST}
+    PG_PORT: ${env:PG_PORT}
+    PG_USERNAME: ${env:PG_USERNAME}
+    PG_PASSWORD: ${env:PG_PASSWORD}
+    PG_DB: ${env:PG_DB}
 
 functions:
   products:

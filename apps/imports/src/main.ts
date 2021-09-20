@@ -5,6 +5,7 @@ import { Handler, APIGatewayEvent, S3Event } from 'aws-lambda';
 
 import { ImportsModule } from './imports.module';
 import { ImportsService } from './services/imports.service';
+import { CROSS_ORIGIN_HEADERS } from './constants/http.constants';
 
 export const importProductsFile: Handler = async (
 	event: APIGatewayEvent,
@@ -15,13 +16,15 @@ export const importProductsFile: Handler = async (
 	try {
 		const body = await importsService.importProductsFile(event.queryStringParameters.name);
 		return {
-			body,
+			body: body,
 			statusCode: HttpStatus.OK,
+			...CROSS_ORIGIN_HEADERS,
 		};
 	} catch (err) {
 		return {
-			body: err.message,
+			body: JSON.stringify(err),
 			statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+			...CROSS_ORIGIN_HEADERS,
 		};
 	}
 };
@@ -40,7 +43,7 @@ export const uploadProductsFile: Handler = async (
 		};
 	} catch (err) {
 		return {
-			body: err.message,
+			body: JSON.stringify(err),
 			statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
 		};
 	}

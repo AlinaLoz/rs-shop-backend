@@ -16,9 +16,12 @@ declare global {
 			
 			NODE_ENV: 'local' | 'production';
 			AWS_ACCESS_KEY_ID_LOCAL: string;
-			AWS_SECRET_ACCESS_KEY: string;
-			AWS_ENDPOINT: string;
-			AWS_S3_LOCALLY_DIR: string;
+			AWS_SECRET_ACCESS_KEY_LOCAL: string;
+			AWS_ENDPOINT_LOCAL: string;
+			AWS_S3_DIR_LOCAL: string;
+			
+			RM_AWS_ACCESS_KEY_ID: string;
+			RM_AWS_SECRET_ACCESS_KEY: string;
 		}
 	}
 }
