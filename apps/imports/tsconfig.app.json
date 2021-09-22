@@ -3,7 +3,7 @@
   "baseUrl": "./",
   "compilerOptions": {
     "declaration": false,
-    "outDir": "../../dist/apps/imports"
+    "outDir": "../../dist"
   },
   "include": [
     "src/**/*"

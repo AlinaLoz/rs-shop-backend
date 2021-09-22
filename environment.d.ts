@@ -1,6 +1,9 @@
 declare global {
 	namespace NodeJS {
 		interface ProcessEnv {
+			NODE_ENV: 'local' | 'dev' | 'prod';
+			AWS_REGION: string;
+			
 			PG: IPostgres;
 			PG_HOST: string;
 			PG_PORT: number;
@@ -12,16 +15,10 @@ declare global {
 			S3_UPLOAD_DIR: string;
 			S3_EXPIRES: number;
 			
-			AWS_REGION: string;
-			
-			NODE_ENV: 'local' | 'production';
 			AWS_ACCESS_KEY_ID_LOCAL: string;
 			AWS_SECRET_ACCESS_KEY_LOCAL: string;
 			AWS_ENDPOINT_LOCAL: string;
 			AWS_S3_DIR_LOCAL: string;
-			
-			RM_AWS_ACCESS_KEY_ID: string;
-			RM_AWS_SECRET_ACCESS_KEY: string;
 		}
 	}
 }

@@ -2,5 +2,6 @@
 .serverless
 node_modules
 dist
-.env
 tmp
+.env.prod
+.env.local

@@ -6,8 +6,6 @@ plugins:
   - serverless-plugin-optimize
   - serverless-s3-local
 
-#TODO не создавать руками бакет, а создавать программно,если не существует
-#TODO разобраться с переменными окружения, чтоб пробрасывать файл
 custom:
   s3BucketName: ${env:S3_BUCKET_PRODUCTS}
   s3:
@@ -19,6 +17,7 @@ provider:
   runtime: nodejs14.x
   region: ${env:AWS_REGION}
   lambdaHashingVersion: "20201221"
+  stage: ${opt:stage, 'dev'}
   environment:
     NODE_ENV: ${env:NODE_ENV}
     S3_BUCKET_PRODUCTS: ${env:S3_BUCKET_PRODUCTS}
@@ -30,25 +29,19 @@ provider:
     PG_PASSWORD: ${env:PG_PASSWORD}
     PG_DB: ${env:PG_DB}
     AWS_S3_DIR_LOCAL: ${env:AWS_S3_DIR_LOCAL}
-    RM_AWS_ACCESS_KEY_ID: ${env:RM_AWS_ACCESS_KEY_ID}
-    RM_AWS_SECRET_ACCESS_KEY: ${env:RM_AWS_SECRET_ACCESS_KEY}
   iam:
     role:
       statements:
-        - Effect: Allow
-          Action:
-            - "s3:ListBucket"
-          Resource:
-            - "arn:aws:s3:::${env:S3_BUCKET_PRODUCTS}"
-        - Effect: Allow
-          Action:
-            - "*"
-          Resource:
-            - "arn:aws:s3:::${env:S3_BUCKET_PRODUCTS}/*"
+        - Effect: "Allow"
+          Action: "s3:ListBucket"
+          Resource: "arn:aws:s3:::${env:S3_BUCKET_PRODUCTS}"
+        - Effect: "Allow"
+          Action: "s3:*"
+          Resource: "arn:aws:s3:::${env:S3_BUCKET_PRODUCTS}/*"
 
 functions:
   importProductsFile:
-    handler: dist/apps/imports/main.importProductsFile
+    handler: dist/apps/imports/src/main.importProductsFile
     events:
       - http:
           method: get
@@ -59,11 +52,12 @@ functions:
                 name: true
           cors: true
   uploadProductsFile:
-    handler: dist/apps/imports/main.uploadProductsFile
+    handler: dist/apps/imports/src/main.uploadProductsFile
     events:
       - s3:
           bucket: ${env:S3_BUCKET_PRODUCTS}
           event: s3:ObjectCreated:*
           rules:
             - prefix: ${env:S3_UPLOAD_DIR}
+            - suffix: .csv
           existing: true

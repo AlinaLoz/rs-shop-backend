@@ -4,10 +4,7 @@ import { S3Event } from 'aws-lambda';
 import csv from 'csv-parser';
 
 const S3_OPTIONS = {
-	signatureVersion: 'v4',
 	region: process.env.AWS_REGION,
-	accessKeyId: process.env.RM_AWS_ACCESS_KEY_ID,
-	secretAccessKey: process.env.RM_AWS_SECRET_ACCESS_KEY,
 	...(process.env.NODE_ENV === 'local' && {
 		s3ForcePathStyle: true,
 		accessKeyId: process.env.AWS_ACCESS_KEY_ID_LOCAL,
@@ -19,23 +16,18 @@ const S3_OPTIONS = {
 @Injectable()
 export class ImportsService {
 	async importProductsFile(name: string): Promise<string> {
-		console.log('S3_OPTIONS', S3_OPTIONS);
 		const s3 = new S3(S3_OPTIONS);
 		const params = {
 			Bucket: process.env.S3_BUCKET_PRODUCTS,
 			Key: process.env.S3_UPLOAD_DIR + '/' + name,
 			Expires: +process.env.S3_EXPIRES, // in seconds
+			ContentType: 'text/csv',
 		};
-		return await new Promise((resolve, reject) => {
-			s3.getSignedUrl('getObject', params, (err, url) => {
-				err ? reject(err) : resolve(url);
-			});
-		});
+		return await s3.getSignedUrlPromise('putObject', params);
 	}
 	
 	async uploadProductsFile(data: S3Event): Promise<number> {
 		const s3 = new S3(S3_OPTIONS);
-		console.log('S3_OPTIONS', S3_OPTIONS);
 		let countProducts = 0;
 		return new Promise(async (resolve, reject) => {
 			for (const record of data.Records) {
@@ -51,9 +43,25 @@ export class ImportsService {
 					.on('error', (error) => {
 						console.log('error', error);
 					})
-					.on('end', (...end) => {
+					.on('end', async (...end) => {
 						console.log('end', end);
 						console.log('countProducts:', countProducts);
+						try {
+							const pathToFile = `${process.env.S3_BUCKET_PRODUCTS}/${record.s3.object.key}`;
+							await s3.copyObject({
+								Bucket: process.env.S3_BUCKET_PRODUCTS,
+								CopySource: pathToFile,
+								Key: record.s3.object.key.replace(process.env.S3_UPLOAD_DIR, 'parsed')
+							}).promise()
+							console.log(`${pathToFile} was copied to parsed dir`);
+							await s3.deleteObject({
+								Bucket: process.env.S3_BUCKET_PRODUCTS,
+								Key: record.s3.object.key,
+							}).promise();
+							console.log(`${pathToFile} was deleted from uploaded dir`);
+						} catch (err) {
+							console.log('err to delete from uploaded and copy to parsed', err);
+						}
 						resolve(countProducts);
 					});
 			}
