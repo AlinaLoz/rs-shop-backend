@@ -29,7 +29,7 @@ export class ImportsService {
 	async uploadProductsFile(data: S3Event): Promise<number> {
 		const s3 = new S3(S3_OPTIONS);
 		let countProducts = 0;
-		return new Promise(async (resolve, reject) => {
+		return new Promise(async (resolve) => {
 			for (const record of data.Records) {
 				await s3.getObject({
 					Bucket: process.env.S3_BUCKET_PRODUCTS,
@@ -53,12 +53,12 @@ export class ImportsService {
 								CopySource: pathToFile,
 								Key: record.s3.object.key.replace(process.env.S3_UPLOAD_DIR, 'parsed')
 							}).promise()
-							console.log(`${pathToFile} was copied to parsed dir`);
+							console.log(`${record.s3.object.key} was copied to parsed dir`);
 							await s3.deleteObject({
 								Bucket: process.env.S3_BUCKET_PRODUCTS,
 								Key: record.s3.object.key,
 							}).promise();
-							console.log(`${pathToFile} was deleted from uploaded dir`);
+							console.log(`${record.s3.object.key} was deleted from uploaded dir`);
 						} catch (err) {
 							console.log('err to delete from uploaded and copy to parsed', err);
 						}

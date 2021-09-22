@@ -26,15 +26,15 @@ export const importProductsFile: Handler = async (
 	}
 };
 
-	export const uploadProductsFile: Handler = async (
+export const uploadProductsFile: Handler = async (
 	event: S3Event,
 ) => {
 	const appContext = await NestFactory.createApplicationContext(ImportsModule);
 	const importsService = appContext.get(ImportsService);
 	
 	try {
-		const body = await importsService.uploadProductsFile(event);
-		return successResponse(body);
+		const countProducts = await importsService.uploadProductsFile(event);
+		return successResponse({ countProducts });
 	} catch (err) {
 		return errorResponse(err);
 	}

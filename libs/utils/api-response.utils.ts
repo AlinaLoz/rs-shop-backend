@@ -26,4 +26,4 @@ const successResponse = ( body: any, statusCode = 200 ): IResponse => {
 	}
 }
 
-export { errorResponse, successResponse, ResponseInterface };
+export { errorResponse, successResponse, IResponse };
