@@ -4,12 +4,11 @@ declare global {
 			NODE_ENV: 'local' | 'dev' | 'prod';
 			AWS_REGION: string;
 			
-			PG: IPostgres;
-			PG_HOST: string;
-			PG_PORT: number;
-			PG_USERNAME: string;
-			PG_PASSWORD: string;
-			PG_DB: string;
+			POSTGRES_HOST: string;
+			POSTGRES_PORT: number;
+			POSTGRES_USER: string;
+			POSTGRES_PASSWORD: string;
+			POSTGRES_DB: string;
 			
 			S3_BUCKET_PRODUCTS: string;
 			S3_UPLOAD_DIR: string;
@@ -19,6 +18,13 @@ declare global {
 			AWS_SECRET_ACCESS_KEY_LOCAL: string;
 			AWS_ENDPOINT_LOCAL: string;
 			AWS_S3_DIR_LOCAL: string;
+			
+			SQS_URL: string;
+			SQS_URL_LOCAL: string;
+			SQS_QUEUE_NAME: string;
+			
+			SNS_ARN: string;
+			SNS_LOCAL_PORT: string;
 		}
 	}
 }

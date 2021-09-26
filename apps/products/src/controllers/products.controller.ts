@@ -1,5 +1,4 @@
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
-import { Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { ProductsService } from '../services/products.service';

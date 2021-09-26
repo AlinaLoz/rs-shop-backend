@@ -16,7 +16,7 @@
     "paths": {
       "@libs": ["libs"],
       "@libs/*": ["libs/*"],
-      "@apps/*": ["apps/*"],
+      "@apps/*": ["functions/*"],
     }
   }
 }
