@@ -1,0 +1,28 @@
+service: ${env:SERVICE_NAME}-products
+
+useDotenv: true
+plugins:
+  - serverless-offline
+  - serverless-plugin-optimize
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: ${env:AWS_REGION}
+  lambdaHashingVersion: "20201221"
+  environment:
+    PG_HOST: ${env:PG_HOST}
+    PG_PORT: ${env:PG_PORT}
+    PG_USERNAME: ${env:PG_USERNAME}
+    PG_PASSWORD: ${env:PG_PASSWORD}
+    PG_DB: ${env:PG_DB}
+
+functions:
+  products:
+    handler: dist/apps/products/src/main.handler
+    events:
+      - http:
+          method: ANY
+          path: '{proxy+}'
+          cors: true
+

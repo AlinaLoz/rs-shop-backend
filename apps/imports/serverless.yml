@@ -1,0 +1,63 @@
+service: ${env:SERVICE_NAME}-imports
+
+useDotenv: true
+plugins:
+  - serverless-offline
+  - serverless-plugin-optimize
+  - serverless-s3-local
+
+custom:
+  s3BucketName: ${env:S3_BUCKET_PRODUCTS}
+  s3:
+    host: localhost
+    directory: ${env:AWS_S3_DIR_LOCAL}
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: ${env:AWS_REGION}
+  lambdaHashingVersion: "20201221"
+  stage: ${opt:stage, 'dev'}
+  environment:
+    NODE_ENV: ${env:NODE_ENV}
+    S3_BUCKET_PRODUCTS: ${env:S3_BUCKET_PRODUCTS}
+    S3_UPLOAD_DIR: ${env:S3_UPLOAD_DIR}
+    S3_EXPIRES: ${env:S3_EXPIRES}
+    PG_HOST: ${env:PG_HOST}
+    PG_PORT: ${env:PG_PORT}
+    PG_USERNAME: ${env:PG_USERNAME}
+    PG_PASSWORD: ${env:PG_PASSWORD}
+    PG_DB: ${env:PG_DB}
+    AWS_S3_DIR_LOCAL: ${env:AWS_S3_DIR_LOCAL}
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action: "s3:ListBucket"
+          Resource: "arn:aws:s3:::${env:S3_BUCKET_PRODUCTS}"
+        - Effect: "Allow"
+          Action: "s3:*"
+          Resource: "arn:aws:s3:::${env:S3_BUCKET_PRODUCTS}/*"
+
+functions:
+  importProductsFile:
+    handler: dist/apps/imports/src/main.importProductsFile
+    events:
+      - http:
+          method: get
+          path: import
+          request:
+            parameters:
+              querystrings:
+                name: true
+          cors: true
+  uploadProductsFile:
+    handler: dist/apps/imports/src/main.uploadProductsFile
+    events:
+      - s3:
+          bucket: ${env:S3_BUCKET_PRODUCTS}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: ${env:S3_UPLOAD_DIR}
+            - suffix: .csv
+          existing: true

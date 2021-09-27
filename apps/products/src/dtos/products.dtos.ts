@@ -1,12 +1,9 @@
-import { IsInt, IsOptional, IsString, IsUUID, Max, Min, IsNumber } from 'class-validator';
-import {Expose, Transform, Type} from 'class-transformer';
+import { IsInt, IsOptional, IsString, IsUUID, Max, Min } from 'class-validator';
+import {Expose, Type} from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-import {
-  ConstructableDTO,
-  PaginationDTO,
-} from '@libs/dtos';
-import {ERRORS, MAX_INTEGER} from '@libs/constants';
+import { ConstructableDTO, PaginationDTO } from '@libs/dtos';
+import { ERRORS, MAX_INTEGER } from '@libs/constants';
 
 export class GetProductByIdParamsDTO {
   @ApiProperty()
@@ -48,12 +45,12 @@ export class GetProductsResponseDTO {
 }
 
 export class CreateProductBodyDTO {
-  @ApiProperty()
-  @IsString()
+  @ApiProperty({ minLength: 1, maxLength: 50 })
+  @IsString({ message: ERRORS.NOT_A_STRING })
   title: string;
   
-  @ApiProperty()
-  @IsString()
+  @ApiProperty({ minLength: 0, maxLength: 50 })
+  @IsString({ message: ERRORS.NOT_A_STRING })
   @IsOptional()
   description: string;
   

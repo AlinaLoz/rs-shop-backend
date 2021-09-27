@@ -1,4 +1,24 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src"
+  "sourceRoot": "apps/products/src",
+  "projects": {
+    "products": {
+      "type": "application",
+      "root": "apps/products",
+      "entryFile": "main",
+      "sourceRoot": "apps/products/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/products/tsconfig.app.json"
+      }
+    },
+    "imports": {
+      "type": "application",
+      "root": "apps/imports",
+      "entryFile": "main",
+      "sourceRoot": "apps/imports/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/imports/tsconfig.app.json"
+      }
+    }
+  }
 }
