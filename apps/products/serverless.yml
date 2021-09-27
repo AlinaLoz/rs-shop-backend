@@ -21,7 +21,7 @@ provider:
     POSTGRES_DB: ${env:POSTGRES_DB}
     SNS_LOCAL_PORT: 4200
     SNS_ARN:
-      Ref: snsTopic
+      Ref: createProductTopic
   iam:
     role:
       statements:
@@ -32,7 +32,7 @@ provider:
         - Effect: "Allow"
           Action: "sns:*"
           Resource:
-            Fn::GetAtt: [ snsTopic, Arn ]
+            Fn::GetAtt: [ createProductTopic, Arn ]
 
 functions:
   httpProductsHandler:
