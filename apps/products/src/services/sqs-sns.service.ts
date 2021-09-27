@@ -27,13 +27,6 @@ export class SqsSnsService {
 		this.completionOfProductsProcessing();
 	}
 	
-	async createProductTopic(event: SNSEvent): Promise<void> {
-		this.logger.logRequest('createProductTopic');
-		event.Records.forEach((record) => {
-			this.logger.logRequest(`record: ${record}`);
-		});
-	}
-	
 	private completionOfProductsProcessing(): void {
 		this.sns.publish({
 			Subject: 'qwertty',

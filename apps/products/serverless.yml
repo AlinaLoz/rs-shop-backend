@@ -51,28 +51,23 @@ functions:
           arn:
             Fn::GetAtt: [ catalogItemsQueue, Arn ]
 
-  createProductTopic:
-    handler: dist/apps/products/src/main.createProductTopic
-    events:
-      - sns: snsTopic
-
 resources:
   Resources:
     catalogItemsQueue:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: ${env:SQS_QUEUE_NAME}
-    snsTopic:
+    createProductTopic:
       Type: AWS::SNS::Topic
       Properties:
         TopicName: ${env:SNS_TOPIC_NAME}
-    snsSubscriptions:
+    snsCreateProductSubscriptions:
       Type: AWS::SNS::Subscription
       Properties:
         Endpoint: alina.lozyuk.1999@gmail.com
         Protocol: email
         TopicArn:
-          Ref: snsTopic
+          Ref: createProductTopic
 
 custom:
   serverless-offline:

@@ -20,16 +20,3 @@ export const catalogBatchProcess: Handler = async (
 		return errorResponse(err);
 	}
 };
-
-export const createProductTopic: Handler = async(
-	event: SNSEvent,
-) => {
-	const appContext = await NestFactory.createApplicationContext(AppModule);
-	const sqsSnsService = appContext.get(SqsSnsService);
-	try {
-		await sqsSnsService.createProductTopic(event);
-		return successResponse('');
-	} catch (err) {
-		return errorResponse(err);
-	}
-};
