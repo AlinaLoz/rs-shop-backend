@@ -7,22 +7,12 @@ interface ILogger {
 
 class WinstonLogger implements ILogger {
 	private readonly logger: winston.Logger;
-	private readonly format: winston.Logform.Format;
 	
 	constructor() {
-		this.format = winston.format.combine(
-			winston.format.colorize(),
-			winston.format.timestamp(),
-			winston.format.align(),
-			winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
-		);
-		
 		this.logger = winston.createLogger({
 			level: process.env.NODE_ENV === 'prod' ? 'error' : 'info',
 			transports: [
-				new winston.transports.Console({
-					format: this.format
-				})
+				new winston.transports.Console({})
 			]
 		});
 	}

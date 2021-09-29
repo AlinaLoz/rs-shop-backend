@@ -21,8 +21,8 @@ provider:
     AWS_S3_DIR_LOCAL: ${env:AWS_S3_DIR_LOCAL}
     SQS_URL_LOCAL: ${env:SQS_URL_LOCAL}
     SQS_QUEUE_NAME: ${env:SQS_QUEUE_NAME}
-    SQS_URL:
-      Ref: catalogItemsQueue
+    SQS_URL: ${cf:${env:SERVICE_NAME}-products-${self:provider.stage}.catalogItemsQueueUrl}
+    SQS_ARN: ${cf:${env:SERVICE_NAME}-products-${self:provider.stage}.catalogItemsQueueArn}
   iam:
     role:
       statements:
@@ -34,8 +34,11 @@ provider:
           Resource: "arn:aws:s3:::${env:S3_BUCKET_PRODUCTS}/*"
         - Effect: "Allow"
           Action: "sqs:*"
+# to run locally need uncomment
+#          Resource:
+#            Fn::GetAtt: [ catalogItemsQueue, Arn ]
           Resource:
-            Fn::GetAtt: [ catalogItemsQueue, Arn ]
+            - "${cf:${env:SERVICE_NAME}-products-${self:provider.stage}.catalogItemsQueueArn}"
 
 functions:
   importProductsFile:
@@ -59,13 +62,13 @@ functions:
             - prefix: ${env:S3_UPLOAD_DIR}
             - suffix: .csv
           existing: true
-
-resources:
-  Resources:
-    catalogItemsQueue:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: ${env:SQS_QUEUE_NAME}
+# to run locally need uncomment
+#resources:
+#  Resources:
+#    catalogItemsQueue:
+#      Type: AWS::SQS::Queue
+#      Properties:
+#        QueueName: ${env:SQS_QUEUE_NAME}
 
 custom:
   s3BucketName: ${env:S3_BUCKET_PRODUCTS}
@@ -79,4 +82,8 @@ custom:
     region: ${env:AWS_REGION}
     accessKeyId: root
     secretAccessKey: root
+
+package:
+  patterns:
+    - '!dockers/**'
 

@@ -32,7 +32,7 @@ provider:
         - Effect: "Allow"
           Action: "sns:*"
           Resource:
-            Fn::GetAtt: [ createProductTopic, Arn ]
+            Ref: createProductTopic
 
 functions:
   httpProductsHandler:
@@ -61,13 +61,20 @@ resources:
       Type: AWS::SNS::Topic
       Properties:
         TopicName: ${env:SNS_TOPIC_NAME}
-    snsCreateProductSubscriptions:
+    snsSubscriptions:
       Type: AWS::SNS::Subscription
       Properties:
         Endpoint: alina.lozyuk.1999@gmail.com
         Protocol: email
         TopicArn:
           Ref: createProductTopic
+  Outputs:
+    catalogItemsQueueUrl:
+      Value:
+        Ref: catalogItemsQueue
+    catalogItemsQueueArn:
+      Value:
+        Fn::GetAtt: [ catalogItemsQueue, Arn ]
 
 custom:
   serverless-offline:
@@ -86,3 +93,6 @@ custom:
     accessKeyId: root
     secretAccessKey: root
 
+package:
+  patterns:
+    - '!dockers/**'
