@@ -61,13 +61,27 @@ resources:
       Type: AWS::SNS::Topic
       Properties:
         TopicName: ${env:SNS_TOPIC_NAME}
-    snsSubscriptions:
+    snsSuccesProductsSubscriptions:
       Type: AWS::SNS::Subscription
       Properties:
         Endpoint: alina.lozyuk.1999@gmail.com
         Protocol: email
         TopicArn:
           Ref: createProductTopic
+        FilterPolicy:
+          isValidProduct:
+            - 'true'
+    snsErrorProductsSubscriptions:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: a.lozyuk@pixelplex.io
+        Protocol: email
+        TopicArn:
+          Ref: createProductTopic
+        FilterPolicy:
+          isValidProduct:
+            - 'false'
+
   Outputs:
     catalogItemsQueueUrl:
       Value:
