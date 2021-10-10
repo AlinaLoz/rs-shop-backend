@@ -1,0 +1,19 @@
+service: ${env:SERVICE_NAME}-authorization
+
+useDotenv: true
+plugins:
+  - serverless-offline
+  - serverless-plugin-optimize
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: ${env:AWS_REGION}
+  lambdaHashingVersion: "20201221"
+  stage: ${opt:stage, 'dev'}
+  environment:
+    NODE_ENV: ${env:NODE_ENV}
+
+functions:
+  basicAuthorizer:
+    handler: dist/apps/imports/src/main.importProductsFile

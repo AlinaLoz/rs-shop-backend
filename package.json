@@ -8,7 +8,7 @@
     "prebuild": "rimraf dist",
     "build:products": "nest build products",
     "build:imports": "nest build imports",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start:sls:imports": "sls offline start --config apps/imports/serverless.yml",
     "start:sls:products": "sls offline start --config apps/products/serverless.yml",
     "start:products:dev": "nest start products --watch",
@@ -22,7 +22,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "jest --config ./apps/rs-shop-back-lozita/test/jest-e2e.json",
     "migrate:run": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:run",
     "migrate:create": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:create -n",
     "migrate:revert": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:revert"
@@ -75,7 +75,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -83,7 +83,10 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/apps/"
+    ]
   }
 }
