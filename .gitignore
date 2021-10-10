@@ -5,3 +5,4 @@ dist
 tmp
 .env.prod
 .env.local
+_data

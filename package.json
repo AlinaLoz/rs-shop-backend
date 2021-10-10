@@ -47,6 +47,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
+    "serverless-offline-sns": "^0.76.0",
+    "serverless-offline-sqs": "^5.0.0",
     "serverless-s3-local": "^0.6.20",
     "swagger-ui-express": "^4.1.6",
     "typeorm": "^0.2.37"

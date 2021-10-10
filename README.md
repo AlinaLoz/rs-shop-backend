@@ -15,5 +15,17 @@ yarn start:sls:imports
 aws --endpoint http://localhost:4569 s3 cp ~/Desktop/rs-aws/backend/apps/imports/tmp/userdata.csv  s3://rs-shop-back-lozita-products/uploaded/userdata.csv --profile s3local
 ```
 
+# Simulate sqs event locally
+in directory `dockers/sqs` need to run
+```
+docker-compose up -d
+```
+
+# Run db localy
+in directory `dockers/postgres` need to run
+```
+docker-compose up -d
+```
+
 # .env
 environment.d.ts describes all variables.

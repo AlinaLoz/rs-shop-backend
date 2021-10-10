@@ -2,6 +2,8 @@ service: ${env:SERVICE_NAME}-products
 
 useDotenv: true
 plugins:
+  - serverless-offline-sqs
+  - serverless-offline-sns
   - serverless-offline
   - serverless-plugin-optimize
 
@@ -10,19 +12,101 @@ provider:
   runtime: nodejs14.x
   region: ${env:AWS_REGION}
   lambdaHashingVersion: "20201221"
+  stage: ${opt:stage, 'dev'}
   environment:
-    PG_HOST: ${env:PG_HOST}
-    PG_PORT: ${env:PG_PORT}
-    PG_USERNAME: ${env:PG_USERNAME}
-    PG_PASSWORD: ${env:PG_PASSWORD}
-    PG_DB: ${env:PG_DB}
+    POSTGRES_HOST: ${env:POSTGRES_HOST}
+    POSTGRES_PORT: ${env:POSTGRES_PORT}
+    POSTGRES_USER: ${env:POSTGRES_USER}
+    POSTGRES_PASSWORD: ${env:POSTGRES_PASSWORD}
+    POSTGRES_DB: ${env:POSTGRES_DB}
+    SNS_LOCAL_PORT: 4200
+    SNS_ARN:
+      Ref: createProductTopic
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action: "sqs:*"
+          Resource:
+            Fn::GetAtt: [ catalogItemsQueue, Arn ]
+        - Effect: "Allow"
+          Action: "sns:*"
+          Resource:
+            Ref: createProductTopic
 
 functions:
-  products:
-    handler: dist/apps/products/src/main.handler
+  httpProductsHandler:
+    handler: dist/apps/products/src/main.httpProductsHandler
     events:
       - http:
           method: ANY
           path: '{proxy+}'
           cors: true
 
+  catalogBatchProcess:
+    handler: dist/apps/products/src/main.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            Fn::GetAtt: [ catalogItemsQueue, Arn ]
+
+resources:
+  Resources:
+    catalogItemsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${env:SQS_QUEUE_NAME}
+    createProductTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${env:SNS_TOPIC_NAME}
+    snsSuccesProductsSubscriptions:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: alina.lozyuk.1999@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: createProductTopic
+        FilterPolicy:
+          isValidProduct:
+            - 'true'
+    snsErrorProductsSubscriptions:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: a.lozyuk@pixelplex.io
+        Protocol: email
+        TopicArn:
+          Ref: createProductTopic
+        FilterPolicy:
+          isValidProduct:
+            - 'false'
+
+  Outputs:
+    catalogItemsQueueUrl:
+      Value:
+        Ref: catalogItemsQueue
+    catalogItemsQueueArn:
+      Value:
+        Fn::GetAtt: [ catalogItemsQueue, Arn ]
+
+custom:
+  serverless-offline:
+    lambdaPort: 3003
+    httpPort: 3004
+  snsClient:
+    port: 4200
+  serverless-offline-sns:
+    port: ${self:custom.snsClient.port}
+    debug: false
+  serverless-offline-sqs:
+    autoCreate: true
+    apiVersion: '2012-11-05'
+    endpoint: ${env:SQS_URL_LOCAL}
+    region: ${env:AWS_REGION}
+    accessKeyId: root
+    secretAccessKey: root
+
+package:
+  patterns:
+    - '!dockers/**'
