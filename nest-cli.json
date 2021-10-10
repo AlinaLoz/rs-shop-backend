@@ -1,6 +1,6 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/rs-shop-back-lozita/apps/products/src",
+  "sourceRoot": "apps/products/src",
   "projects": {
     "products": {
       "type": "application",
@@ -20,15 +20,6 @@
         "tsConfigPath": "apps/imports/tsconfig.app.json"
       }
     },
-    "rs-shop-back-lozita": {
-      "type": "application",
-      "root": "apps/rs-shop-back-lozita",
-      "entryFile": "main",
-      "sourceRoot": "apps/rs-shop-back-lozita/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/rs-shop-back-lozita/tsconfig.app.json"
-      }
-    },
     "authorization": {
       "type": "application",
       "root": "apps/authorization",
@@ -38,11 +29,5 @@
         "tsConfigPath": "apps/authorization/tsconfig.app.json"
       }
     }
-  },
-  "monorepo": true,
-  "root": "apps/rs-shop-back-lozita",
-  "compilerOptions": {
-    "webpack": true,
-    "tsConfigPath": "apps/rs-shop-back-lozita/tsconfig.app.json"
   }
 }
