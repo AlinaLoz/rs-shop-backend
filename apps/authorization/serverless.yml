@@ -13,12 +13,15 @@ provider:
   stage: ${opt:stage, 'dev'}
   environment:
     NODE_ENV: ${env:NODE_ENV}
+    AlinaLoz: ${env:AlinaLoz}
 
 functions:
   basicAuthorizer:
     handler: dist/apps/authorization/src/main.basicAuthorizer
-    events:
-      - http:
-          method: get
-          path: /
+
+#resources:
+#  Outputs:
+#    BasicAuthorizerLambdaFunctionQualifiedArn:
+#      Export:
+#        Name: "Fn::Sub": "${AWS::StackName}-BasicAuthorizerArn""
 

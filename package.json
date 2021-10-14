@@ -20,7 +20,7 @@
     "start:authorization:debug": "nest start authorization --debug --watch",
     "deploy:products": "yarn build:products & sls deploy --config apps/products/serverless.yml",
     "deploy:imports": "yarn build:imports & sls deploy --config apps/imports/serverless.yml",
-    "deploy:authorization": "yarn build:imports & sls deploy --config apps/authorization/serverless.yml",
+    "deploy:authorization": "yarn build:authorization & sls deploy --config apps/authorization/serverless.yml",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
