@@ -10,7 +10,7 @@ export class AuthorizationService {
     if (!token || prefix.toLowerCase() !== 'basic') {
       throw new UnauthorizedError();
     }
-    const decodedToken = Buffer.from(onlyToken, 'base64').toString('ascii';
+    const decodedToken = Buffer.from(onlyToken, 'base64').toString('ascii');
     const [login, password] = decodedToken.split(':');
     if (!login || !password || CONFIG[login] !== password) {
       throw new ForbiddenError();
