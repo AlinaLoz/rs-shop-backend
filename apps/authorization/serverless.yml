@@ -16,4 +16,9 @@ provider:
 
 functions:
   basicAuthorizer:
-    handler: dist/apps/imports/src/main.importProductsFile
+    handler: dist/apps/authorization/src/main.basicAuthorizer
+    events:
+      - http:
+          method: get
+          path: /
+
