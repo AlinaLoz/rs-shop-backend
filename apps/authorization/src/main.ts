@@ -1,19 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 
 require('dotenv').config();
-import { Handler, APIGatewayEvent } from 'aws-lambda';
-import { errorResponse, successResponse } from '@libs/utils';
+import { Handler, APIGatewayAuthorizerEvent } from 'aws-lambda';
 import { AuthorizationModule } from './authorization.module';
-import { AuthorizationService } from '@apps/authorization/src/authorization.service';
+import { AuthorizationService } from './authorization.service';
 
-export const basicAuthorizer: Handler<APIGatewayEvent> = async (event) => {
-  const token = event.headers['Authorization'];
+export const basicAuthorizer: Handler<APIGatewayAuthorizerEvent> = async (event, ctc, cb) => {
+  console.log('basicAuthorizer');
+  const token = event['authorizedToken'];
+  console.log('dasd', token, event.type);
+  if (event.type?.toLowerCase() !== 'token' || !token) {
+    return cb(`Unathorized`);
+  }
   const appContext = await NestFactory.createApplicationContext(AuthorizationModule);
   const authorizationService = appContext.get(AuthorizationService);
   try {
-    await authorizationService.basicSignIn(token);
-    return successResponse({});
+    const isLogin = await authorizationService.basicSignIn(token);
+    console.log('heheheh');
+    const policy = authorizationService.generatePolicy(token, event.methodArn, isLogin ? 'Allow' : 'Deny');
+    cb(null, policy);
   } catch(err) {
-    return errorResponse(err, err.status);
+    cb(`Unathorized: ${err.message}`);
   }
 };

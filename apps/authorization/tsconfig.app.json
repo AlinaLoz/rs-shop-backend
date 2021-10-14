@@ -1,17 +1,9 @@
 {
   "extends": "../../tsconfig.json",
-  "baseUrl": "./",
   "compilerOptions": {
     "declaration": false,
-    "outDir": "../../dist"
+    "outDir": "../../dist/apps/authorization/src"
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "test",
-    "**/*spec.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
 }
