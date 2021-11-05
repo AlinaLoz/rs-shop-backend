@@ -2,8 +2,8 @@ service: ${env:SERVICE_NAME}-products
 
 useDotenv: true
 plugins:
-  - serverless-offline-sqs
-  - serverless-offline-sns
+#  - serverless-offline-sqs
+#  - serverless-offline-sns
   - serverless-offline
   - serverless-plugin-optimize
 
@@ -22,17 +22,17 @@ provider:
     SNS_LOCAL_PORT: 4200
     SNS_ARN:
       Ref: createProductTopic
-  iam:
-    role:
-      statements:
-        - Effect: "Allow"
-          Action: "sqs:*"
-          Resource:
-            Fn::GetAtt: [ catalogItemsQueue, Arn ]
-        - Effect: "Allow"
-          Action: "sns:*"
-          Resource:
-            Ref: createProductTopic
+#  iam:
+#    role:
+#      statements:
+#        - Effect: "Allow"
+#          Action: "sqs:*"
+#          Resource:
+#            Fn::GetAtt: [ catalogItemsQueue, Arn ]
+#        - Effect: "Allow"
+#          Action: "sns:*"
+#          Resource:
+#            Ref: createProductTopic
 
 functions:
   httpProductsHandler:
@@ -43,52 +43,52 @@ functions:
           path: '{proxy+}'
           cors: true
 
-  catalogBatchProcess:
-    handler: dist/apps/products/src/main.catalogBatchProcess
-    events:
-      - sqs:
-          batchSize: 5
-          arn:
-            Fn::GetAtt: [ catalogItemsQueue, Arn ]
+#  catalogBatchProcess:
+#    handler: dist/apps/products/src/main.catalogBatchProcess
+#    events:
+#      - sqs:
+#          batchSize: 5
+#          arn:
+#            Fn::GetAtt: [ catalogItemsQueue, Arn ]
 
-resources:
-  Resources:
-    catalogItemsQueue:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: ${env:SQS_QUEUE_NAME}
-    createProductTopic:
-      Type: AWS::SNS::Topic
-      Properties:
-        TopicName: ${env:SNS_TOPIC_NAME}
-    snsSuccesProductsSubscriptions:
-      Type: AWS::SNS::Subscription
-      Properties:
-        Endpoint: alina.lozyuk.1999@gmail.com
-        Protocol: email
-        TopicArn:
-          Ref: createProductTopic
-        FilterPolicy:
-          isValidProduct:
-            - 'true'
-    snsErrorProductsSubscriptions:
-      Type: AWS::SNS::Subscription
-      Properties:
-        Endpoint: a.lozyuk@pixelplex.io
-        Protocol: email
-        TopicArn:
-          Ref: createProductTopic
-        FilterPolicy:
-          isValidProduct:
-            - 'false'
-
-  Outputs:
-    catalogItemsQueueUrl:
-      Value:
-        Ref: catalogItemsQueue
-    catalogItemsQueueArn:
-      Value:
-        Fn::GetAtt: [ catalogItemsQueue, Arn ]
+#resources:
+#  Resources:
+#    catalogItemsQueue:
+#      Type: AWS::SQS::Queue
+#      Properties:
+#        QueueName: ${env:SQS_QUEUE_NAME}
+#    createProductTopic:
+#      Type: AWS::SNS::Topic
+#      Properties:
+#        TopicName: ${env:SNS_TOPIC_NAME}
+#    snsSuccesProductsSubscriptions:
+#      Type: AWS::SNS::Subscription
+#      Properties:
+#        Endpoint: alina.lozyuk.1999@gmail.com
+#        Protocol: email
+#        TopicArn:
+#          Ref: createProductTopic
+#        FilterPolicy:
+#          isValidProduct:
+#            - 'true'
+#    snsErrorProductsSubscriptions:
+#      Type: AWS::SNS::Subscription
+#      Properties:
+#        Endpoint: a.lozyuk@pixelplex.io
+#        Protocol: email
+#        TopicArn:
+#          Ref: createProductTopic
+#        FilterPolicy:
+#          isValidProduct:
+#            - 'false'
+#
+#  Outputs:
+#    catalogItemsQueueUrl:
+#      Value:
+#        Ref: catalogItemsQueue
+#    catalogItemsQueueArn:
+#      Value:
+#        Fn::GetAtt: [ catalogItemsQueue, Arn ]
 
 custom:
   serverless-offline:

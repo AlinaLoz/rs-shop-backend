@@ -20,15 +20,6 @@
         "tsConfigPath": "apps/imports/tsconfig.app.json"
       }
     },
-<<<<<<< HEAD
-    "bff": {
-      "type": "application",
-      "root": "apps/bff",
-      "entryFile": "main",
-      "sourceRoot": "apps/bff/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/bff/tsconfig.app.json"
-=======
     "authorization": {
       "type": "application",
       "root": "apps/authorization",
@@ -36,7 +27,15 @@
       "sourceRoot": "apps/authorization/src",
       "compilerOptions": {
         "tsConfigPath": "apps/authorization/tsconfig.app.json"
->>>>>>> 58677e8389303c239c09a8a39fcf198a8d3b7e1d
+      }
+    },
+    "bff": {
+      "type": "application",
+      "root": "apps/bff",
+      "entryFile": "main",
+      "sourceRoot": "apps/bff/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/bff/tsconfig.app.json"
       }
     }
   }

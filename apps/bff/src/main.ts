@@ -1,41 +1,24 @@
-require('dotenv').config();
-import { HttpStatus } from '@nestjs/common';
+import cors from 'cors';
+import { INestApplication, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { Handler, APIGatewayEvent, S3Event } from 'aws-lambda';
+import { AppModule } from './app.module';
+import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 
-import { errorResponse, successResponse } from '@libs/utils';
-import { ERRORS } from '@libs/constants';
-import { ImportsModule } from './imports.module';
-import { ImportsService } from './services/imports.service';
+async function bootstrap() {
+	const app = await NestFactory.create(AppModule);
+	app.use(cors());
+	app.setGlobalPrefix('/api/v1')
+	setupSwagger(app);
+	await app.listen(process.env.BFF_PORT || 3000);
+	Logger.log(`Application is running on: ${await app.getUrl()}`);
+}
+bootstrap();
 
-export const importProductsFile: Handler = async (
-	event: APIGatewayEvent,
-) => {
-	if (!/\.csv$/.test(event.queryStringParameters.name)) {
-		return errorResponse(new Error(ERRORS.NOT_A_CSV), HttpStatus.UNPROCESSABLE_ENTITY);
-	}
-	
-	const appContext = await NestFactory.createApplicationContext(ImportsModule);
-	const importsService = appContext.get(ImportsService);
-	
-	try {
-		const body = await importsService.importProductsFile(event.queryStringParameters.name);
-		return successResponse(body);
-	} catch (err) {
-		return errorResponse(err);
-	}
-};
-
-export const uploadProductsFile: Handler = async (
-	event: S3Event,
-) => {
-	const appContext = await NestFactory.createApplicationContext(ImportsModule);
-	const importsService = appContext.get(ImportsService);
-	
-	try {
-		const countProducts = await importsService.uploadProductsFile(event);
-		return successResponse({ countProducts });
-	} catch (err) {
-		return errorResponse(err);
-	}
-};
+function setupSwagger(app: INestApplication): void {
+	const options = new DocumentBuilder()
+		.setTitle('Lozita bff-service Documentation')
+		.setVersion('1.0.0')
+		.build();
+	const document = SwaggerModule.createDocument(app, options);
+	SwaggerModule.setup('api', app, document);
+}
