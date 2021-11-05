@@ -25,6 +25,11 @@ declare global {
 			
 			SNS_ARN: string;
 			SNS_LOCAL_PORT: string;
+			
+			BFF_PORT: number;
+			PRODUCTS_PORT: number;
+			
+			[serviceUrl: string]: string;
 		}
 	}
 }

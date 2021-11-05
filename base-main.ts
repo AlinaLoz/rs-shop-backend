@@ -18,6 +18,7 @@ function setupSwagger(app: INestApplication): void {
 export async function bootstrap(appModule): Promise<Handler> {
   const app = await NestFactory.create(appModule);
   const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.disable('etag');
   setupSwagger(app);
   app.use(cors());
   await app.init();

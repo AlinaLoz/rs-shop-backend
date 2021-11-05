@@ -7,7 +7,7 @@ import { ERRORS, MAX_INTEGER } from '@libs/constants';
 
 export class GetProductByIdParamsDTO {
   @ApiProperty()
-  @IsUUID('all')
+  @IsUUID('all', { message: ERRORS.INVALID_UUID })
   id: string;
 }
 

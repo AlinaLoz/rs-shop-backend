@@ -9,9 +9,13 @@ import { ErrorDetail, IAbstractError } from '../errors/abstract.error';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: HttpException & { details: any }, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response: Response = ctx.getResponse();
+    if (exception?.details?.status) {
+      response.status(exception?.details?.status).json(exception?.details);
+      return;
+    }
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       if (status >= 400 && status < 500) {
