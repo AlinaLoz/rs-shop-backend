@@ -19,6 +19,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/imports/tsconfig.app.json"
       }
+    },
+    "bff": {
+      "type": "application",
+      "root": "apps/bff",
+      "entryFile": "main",
+      "sourceRoot": "apps/bff/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/bff/tsconfig.app.json"
+      }
     }
   }
 }
